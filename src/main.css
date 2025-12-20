@@ -1,0 +1,146 @@
+.container {
+  padding: 2rem;
+  font-family: "Liberation Mono", monospace;
+}
+
+.header {
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.form {
+  margin-bottom: 2rem;
+}
+
+.input,
+.select,
+.textarea {
+  padding: 0.5rem;
+  font-family: "Liberation Mono", monospace;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.button-primary {
+  background-color: #0078d7;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: "Liberation Mono", monospace;
+  transition: background-color 0.3s ease;
+}
+
+.button-primary:hover {
+  background-color: #005a9e;
+}
+
+.separator {
+  margin-bottom: 1rem;
+}
+
+.subheader {
+  margin-bottom: 0.5rem;
+}
+
+.filter-bar {
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  padding: 0.5rem;
+  font-family: "Liberation Mono", monospace;
+  font-size: 1rem;
+  width: 60%;
+  margin-right: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.category-select {
+  padding: 0.5rem;
+  font-family: "Liberation Mono", monospace;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 35%;
+  box-sizing: border-box;
+}
+
+.reference-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.reference-item {
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-family: "Liberation Mono", monospace;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+}
+
+.category-badge.Licht {
+  background-color: #f5c518;
+}
+
+.category-badge.Pose {
+  background-color: #6ec1e4;
+}
+
+.category-badge.Farbe {
+  background-color: #a2d5a0;
+}
+
+.category-badge.Komposition {
+  background-color: #f08080;
+}
+
+.note-text {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.delete-button {
+  margin-top: 0.5rem;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Liberation Mono", monospace;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
