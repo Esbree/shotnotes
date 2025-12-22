@@ -12,6 +12,9 @@ function App() {
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("Alle");
 
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -105,8 +108,10 @@ function App() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+            setIsSaving(true);
+            setSaveError(null);
 
-            await supabase.from("references").insert([
+            const { error } = await supabase.from("references").insert([
               {
                 user_id: user.id,
                 link,
@@ -115,9 +120,15 @@ function App() {
               },
             ]);
 
-            setLink("");
-            setNote("");
-            setCategory("Licht");
+            if (error) {
+              setSaveError(error.message);
+            } else {
+              setLink("");
+              setNote("");
+              setCategory("Licht");
+            }
+
+            setIsSaving(false);
           }}
           className="form"
         >
@@ -147,9 +158,17 @@ function App() {
             className="textarea"
           />
 
-          <button type="submit" className="button-primary">
-            Speichern
+          <button
+            type="submit"
+            className="button-primary"
+            disabled={isSaving || !link}
+          >
+            {isSaving ? "Speichern..." : "Speichern"}
           </button>
+
+          {saveError && (
+            <p style={{ color: "red", marginTop: "0.5rem" }}>{saveError}</p>
+          )}
         </form>
       )}
 
