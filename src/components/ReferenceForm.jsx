@@ -91,12 +91,13 @@ function ReferenceForm({
       />
 
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button type="submit" disabled={isSaving || !values.link || !isDirty}>
-          {isSaving
-            ? "Speichern..."
-            : editingRef
-            ? "Änderungen speichern"
-            : "Speichern"}
+        <button
+          type="submit"
+          className={`button-primary ${justSaved ? "is-success" : ""}`}
+          disabled={isSaving || !values.link || !isDirty}
+        >
+          <span className="label">Speichern</span>
+          <span className="check">✓</span>
         </button>
 
         {editingRef && (
@@ -105,12 +106,6 @@ function ReferenceForm({
           </button>
         )}
       </div>
-
-      {showFeedback && (
-        <span className={`save-feedback ${isExiting ? "exit" : ""}`}>
-          Gespeichert ✓
-        </span>
-      )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
