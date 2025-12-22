@@ -15,6 +15,17 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
 
+  async function loadReferences() {
+    const { data, error } = await supabase
+      .from("references")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error) {
+      setReferences(data);
+    }
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -33,17 +44,6 @@ function App() {
     if (!user) {
       setReferences([]);
       return;
-    }
-
-    async function loadReferences() {
-      const { data, error } = await supabase
-        .from("references")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error) {
-        setReferences(data);
-      }
     }
 
     loadReferences();
@@ -123,6 +123,7 @@ function App() {
             if (error) {
               setSaveError(error.message);
             } else {
+              await loadReferences();
               setLink("");
               setNote("");
               setCategory("Licht");
