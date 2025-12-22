@@ -14,7 +14,7 @@ function ReferenceItem({ refData, onEdit, onDelete, isEditing }) {
       <em className="note-text">{refData.note}</em>
       <br />
 
-      <button onClick={() => onEdit(refData)}>Bearbeiten</button>
+      <button onClick={() => onEdit(refData)}>Ändern</button>
       <button onClick={() => onDelete(refData.id)} className="delete-button">
         Löschen
       </button>

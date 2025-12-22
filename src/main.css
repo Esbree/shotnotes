@@ -192,3 +192,27 @@ button {
   color: #555;
   font-size: 0.9rem;
 }
+
+.reference-item {
+  background-color: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease, transform 0.12s ease,
+    outline-color 0.12s ease;
+}
+
+.reference-item:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.reference-item.is-editing {
+  outline: 2px solid #0078d7;
+  background-color: #f0f7ff;
+}
+
+.reference-item.is-editing:hover {
+  transform: none;
+}
