@@ -16,6 +16,7 @@ function App() {
 
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("Alle");
+  const [justSaved, setJustSaved] = useState(false);
 
   const {
     references,
@@ -88,15 +89,25 @@ function App() {
             editingRef={editingRef}
             error={error}
             isDirty={isDirty}
+            justSaved={justSaved}
             onChange={(changes) => setFormValues((v) => ({ ...v, ...changes }))}
             onCancel={() => {
               setEditingRef(null);
               setFormValues({ link: "", category: "Licht", note: "" });
             }}
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              saveReference(formValues);
-              setFormValues({ link: "", category: "Licht", note: "" });
+
+              await saveReference(formValues);
+
+              setJustSaved(true);
+              setTimeout(() => setJustSaved(false), 2000);
+
+              setFormValues({
+                link: "",
+                category: "Licht",
+                note: "",
+              });
             }}
           />
 
