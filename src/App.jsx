@@ -11,7 +11,6 @@ function App() {
   const [note, setNote] = useState("");
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("Alle");
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -28,26 +27,41 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const storedRefs = localStorage.getItem("shotnotes-references");
-    if (storedRefs) {
-      setReferences(JSON.parse(storedRefs));
+    if (!user) {
+      setReferences([]);
+      return;
     }
-    setIsLoaded(true);
-  }, []);
 
-  useEffect(() => {
-    if (!isLoaded) return;
-    localStorage.setItem("shotnotes-references", JSON.stringify(references));
-  }, [references, isLoaded]);
+    async function loadReferences() {
+      const { data, error } = await supabase
+        .from("references")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  function deleteReference(id) {
-    setReferences(references.filter((ref) => ref.id !== id));
+      if (!error) {
+        setReferences(data);
+      }
+    }
+
+    loadReferences();
+  }, [user]);
+
+  async function deleteReference(id) {
+    const { error } = await supabase.from("references").delete().eq("id", id);
+
+    if (error) {
+      alert(error.message);
+    }
   }
 
   async function signIn() {
     const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) alert(error.message);
-    else alert("Check deine E-Mails für den Login-Link ✉️");
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Check deine E-Mails für den Login-Link ✉️");
+    }
   }
 
   async function signOut() {
@@ -87,55 +101,57 @@ function App() {
         </div>
       )}
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
+      {user && (
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
 
-          const newRef = {
-            id: Date.now(),
-            link,
-            category,
-            note,
-          };
+            await supabase.from("references").insert([
+              {
+                user_id: user.id,
+                link,
+                category,
+                note,
+              },
+            ]);
 
-          setReferences([newRef, ...references]);
-
-          setLink("");
-          setNote("");
-          setCategory("Licht");
-        }}
-        className="form"
-      >
-        <input
-          placeholder="Link zur Referenz"
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
-          required
-          className="input"
-        />
-
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="select"
+            setLink("");
+            setNote("");
+            setCategory("Licht");
+          }}
+          className="form"
         >
-          <option>Licht</option>
-          <option>Pose</option>
-          <option>Farbe</option>
-          <option>Komposition</option>
-        </select>
+          <input
+            placeholder="Link zur Referenz"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            required
+            className="input"
+          />
 
-        <textarea
-          placeholder="Warum ist dieses Foto gut?"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="textarea"
-        />
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="select"
+          >
+            <option>Licht</option>
+            <option>Pose</option>
+            <option>Farbe</option>
+            <option>Komposition</option>
+          </select>
 
-        <button type="submit" className="button-primary">
-          Speichern
-        </button>
-      </form>
+          <textarea
+            placeholder="Warum ist dieses Foto gut?"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="textarea"
+          />
+
+          <button type="submit" className="button-primary">
+            Speichern
+          </button>
+        </form>
+      )}
 
       <hr className="separator" />
 
