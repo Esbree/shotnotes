@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 function ReferenceForm({
   values,
@@ -6,10 +6,19 @@ function ReferenceForm({
   editingRef,
   error,
   isDirty,
+  justSaved,
   onChange,
   onSubmit,
   onCancel,
 }) {
+  const linkInputRef = useRef(null);
+
+  useEffect(() => {
+    if (editingRef && linkInputRef.current) {
+      linkInputRef.current.focus();
+    }
+  }, [editingRef]);
+
   useEffect(() => {
     function onKeyDown(e) {
       if (e.key === "Escape" && editingRef) {
@@ -35,6 +44,7 @@ function ReferenceForm({
   return (
     <form onSubmit={onSubmit} className="form">
       <input
+        ref={linkInputRef}
         placeholder="Link zur Referenz"
         value={values.link}
         onChange={(e) => onChange({ link: e.target.value })}
@@ -75,6 +85,12 @@ function ReferenceForm({
           </button>
         )}
       </div>
+
+      {justSaved && (
+        <span style={{ color: "#2e7d32", fontSize: "0.9rem" }}>
+          Gespeichert ✓
+        </span>
+      )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
