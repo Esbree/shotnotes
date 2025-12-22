@@ -114,6 +114,7 @@ function App() {
 
           <ReferenceList
             references={filteredReferences}
+            editingRef={editingRef}
             onEdit={(ref) => {
               setEditingRef(ref);
               setFormValues({

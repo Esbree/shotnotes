@@ -1,6 +1,6 @@
-function ReferenceItem({ refData, onEdit, onDelete }) {
+function ReferenceItem({ refData, onEdit, onDelete, isEditing }) {
   return (
-    <li className="reference-item">
+    <li className={`reference-item ${isEditing ? "is-editing" : ""}`}>
       <span className={`category-badge ${refData.category}`}>
         {refData.category}
       </span>
