@@ -92,11 +92,15 @@ button {
 }
 
 .button-secondary {
-  background: transparent;
+  background-color: transparent;
   border: 1px solid #0078d7;
   color: #0078d7;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 5px;
+}
+
+.button-secondary:hover {
+  background-color: #e6f2fb;
 }
 
 .delete-button {
@@ -105,7 +109,6 @@ button {
   border: none;
   padding: 0.4rem 0.8rem;
   border-radius: 5px;
-  margin-left: 0.5rem;
 }
 
 .delete-button:hover {
