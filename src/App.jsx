@@ -15,6 +15,8 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
 
+  const [editingRef, setEditingRef] = useState(null);
+
   async function loadReferences() {
     const { data, error } = await supabase
       .from("references")
@@ -54,6 +56,8 @@ function App() {
 
     if (error) {
       alert(error.message);
+    } else {
+      setReferences((prev) => prev.filter((ref) => ref.id !== id));
     }
   }
 
@@ -111,22 +115,43 @@ function App() {
             setIsSaving(true);
             setSaveError(null);
 
-            const { error } = await supabase.from("references").insert([
-              {
-                user_id: user.id,
-                link,
-                category,
-                note,
-              },
-            ]);
+            let error;
+
+            if (editingRef) {
+              ({ error } = await supabase
+                .from("references")
+                .update({ link, category, note })
+                .eq("id", editingRef.id));
+            } else {
+              ({ error } = await supabase.from("references").insert([
+                {
+                  user_id: user.id,
+                  link,
+                  category,
+                  note,
+                },
+              ]));
+            }
 
             if (error) {
               setSaveError(error.message);
             } else {
-              await loadReferences();
+              if (editingRef) {
+                setReferences((prev) =>
+                  prev.map((ref) =>
+                    ref.id === editingRef.id
+                      ? { ...ref, link, category, note }
+                      : ref
+                  )
+                );
+              } else {
+                await loadReferences();
+              }
+
               setLink("");
               setNote("");
               setCategory("Licht");
+              setEditingRef(null);
             }
 
             setIsSaving(false);
@@ -164,7 +189,11 @@ function App() {
             className="button-primary"
             disabled={isSaving || !link}
           >
-            {isSaving ? "Speichern..." : "Speichern"}
+            {isSaving
+              ? "Speichern..."
+              : editingRef
+              ? "Änderungen speichern"
+              : "Speichern"}
           </button>
 
           {saveError && (
@@ -214,6 +243,16 @@ function App() {
             <br />
             <em className="note-text">{ref.note}</em>
             <br />
+            <button
+              onClick={() => {
+                setEditingRef(ref);
+                setLink(ref.link);
+                setCategory(ref.category);
+                setNote(ref.note);
+              }}
+            >
+              Bearbeiten
+            </button>
             <button
               onClick={() => deleteReference(ref.id)}
               className="delete-button"
