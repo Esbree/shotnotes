@@ -1,12 +1,37 @@
+import { useEffect } from "react";
+
 function ReferenceForm({
   values,
   isSaving,
   editingRef,
   error,
+  isDirty,
   onChange,
   onSubmit,
   onCancel,
 }) {
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.key === "Escape" && editingRef) {
+        onCancel();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [editingRef, onCancel]);
+
+  useEffect(() => {
+    function onKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        onSubmit(e);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onSubmit]);
+
   return (
     <form onSubmit={onSubmit} className="form">
       <input
@@ -36,7 +61,7 @@ function ReferenceForm({
       />
 
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button type="submit" disabled={isSaving || !values.link}>
+        <button type="submit" disabled={isSaving || !values.link || !isDirty}>
           {isSaving
             ? "Speichern..."
             : editingRef

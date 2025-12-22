@@ -59,6 +59,12 @@ function App() {
     return matchesSearch && matchesCategory;
   });
 
+  const isDirty =
+    !editingRef ||
+    formValues.link !== editingRef.link ||
+    formValues.category !== editingRef.category ||
+    formValues.note !== editingRef.note;
+
   return (
     <div className="container">
       <h1>ShotNotes</h1>
@@ -81,6 +87,7 @@ function App() {
             isSaving={isSaving}
             editingRef={editingRef}
             error={error}
+            isDirty={isDirty}
             onChange={(changes) => setFormValues((v) => ({ ...v, ...changes }))}
             onCancel={() => {
               setEditingRef(null);

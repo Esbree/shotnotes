@@ -1,6 +1,6 @@
 import ReferenceItem from "./ReferenceItem";
 
-function ReferenceList({ references, onEdit, onDelete, editingRef }) {
+function ReferenceList({ references, editingRef, onEdit, onDelete }) {
   if (references.length === 0) {
     return <p>Keine passenden Referenzen gefunden.</p>;
   }
