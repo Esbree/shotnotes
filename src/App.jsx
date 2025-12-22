@@ -1,74 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
+import { useReferences } from "./hooks/useReferences";
+import ReferenceForm from "./components/ReferenceForm";
+import ReferenceList from "./components/ReferenceList";
 
 function App() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
 
-  const [references, setReferences] = useState([]);
-  const [link, setLink] = useState("");
-  const [category, setCategory] = useState("Licht");
-  const [note, setNote] = useState("");
+  const [formValues, setFormValues] = useState({
+    link: "",
+    category: "Licht",
+    note: "",
+  });
+
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("Alle");
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState(null);
-
-  const [editingRef, setEditingRef] = useState(null);
-
-  async function loadReferences() {
-    const { data, error } = await supabase
-      .from("references")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error) {
-      setReferences(data);
-    }
-  }
+  const {
+    references,
+    editingRef,
+    setEditingRef,
+    isSaving,
+    error,
+    saveReference,
+    deleteReference,
+  } = useReferences(user);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (_event, session) => setUser(session?.user ?? null)
+    );
 
-    return () => subscription.unsubscribe();
+    return () => subscription.subscription.unsubscribe();
   }, []);
-
-  useEffect(() => {
-    if (!user) {
-      setReferences([]);
-      return;
-    }
-
-    loadReferences();
-  }, [user]);
-
-  async function deleteReference(id) {
-    const { error } = await supabase.from("references").delete().eq("id", id);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      setReferences((prev) => prev.filter((ref) => ref.id !== id));
-    }
-  }
 
   async function signIn() {
     const { error } = await supabase.auth.signInWithOtp({ email });
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Check deine E-Mails für den Login-Link ✉️");
-    }
+    if (!error) alert("Check deine E-Mails ✉️");
   }
 
   async function signOut() {
@@ -88,180 +61,71 @@ function App() {
 
   return (
     <div className="container">
-      <h1 className="header">ShotNotes</h1>
-      <p className="description">Speichere Fotos nicht nur, verstehe sie.</p>
+      <h1>ShotNotes</h1>
 
       {!user ? (
-        <div style={{ marginBottom: "1.5rem" }}>
+        <>
           <input
-            type="email"
             placeholder="E-Mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button onClick={signIn}>Login / Signup</button>
-        </div>
+          <button onClick={signIn}>Login</button>
+        </>
       ) : (
-        <div style={{ marginBottom: "1.5rem" }}>
-          <span>Angemeldet</span>
+        <>
           <button onClick={signOut}>Logout</button>
-        </div>
-      )}
 
-      {user && (
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setIsSaving(true);
-            setSaveError(null);
-
-            let error;
-
-            if (editingRef) {
-              ({ error } = await supabase
-                .from("references")
-                .update({ link, category, note })
-                .eq("id", editingRef.id));
-            } else {
-              ({ error } = await supabase.from("references").insert([
-                {
-                  user_id: user.id,
-                  link,
-                  category,
-                  note,
-                },
-              ]));
-            }
-
-            if (error) {
-              setSaveError(error.message);
-            } else {
-              if (editingRef) {
-                setReferences((prev) =>
-                  prev.map((ref) =>
-                    ref.id === editingRef.id
-                      ? { ...ref, link, category, note }
-                      : ref
-                  )
-                );
-              } else {
-                await loadReferences();
-              }
-
-              setLink("");
-              setNote("");
-              setCategory("Licht");
+          <ReferenceForm
+            values={formValues}
+            isSaving={isSaving}
+            editingRef={editingRef}
+            error={error}
+            onChange={(changes) => setFormValues((v) => ({ ...v, ...changes }))}
+            onCancel={() => {
               setEditingRef(null);
-            }
+              setFormValues({ link: "", category: "Licht", note: "" });
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              saveReference(formValues);
+              setFormValues({ link: "", category: "Licht", note: "" });
+            }}
+          />
 
-            setIsSaving(false);
-          }}
-          className="form"
-        >
+          <hr />
+
           <input
-            placeholder="Link zur Referenz"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            required
-            className="input"
+            placeholder="Suchen..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
 
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="select"
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
           >
+            <option>Alle</option>
             <option>Licht</option>
             <option>Pose</option>
             <option>Farbe</option>
             <option>Komposition</option>
           </select>
 
-          <textarea
-            placeholder="Warum ist dieses Foto gut?"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="textarea"
+          <ReferenceList
+            references={filteredReferences}
+            onEdit={(ref) => {
+              setEditingRef(ref);
+              setFormValues({
+                link: ref.link,
+                category: ref.category,
+                note: ref.note,
+              });
+            }}
+            onDelete={deleteReference}
           />
-
-          <button
-            type="submit"
-            className="button-primary"
-            disabled={isSaving || !link}
-          >
-            {isSaving
-              ? "Speichern..."
-              : editingRef
-              ? "Änderungen speichern"
-              : "Speichern"}
-          </button>
-
-          {saveError && (
-            <p style={{ color: "red", marginTop: "0.5rem" }}>{saveError}</p>
-          )}
-        </form>
+        </>
       )}
-
-      <hr className="separator" />
-
-      <h2 className="subheader">Deine Referenzen</h2>
-
-      <div className="filter-bar">
-        <input
-          placeholder="Suchen..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
-        />
-
-        <select
-          value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
-          className="category-select"
-        >
-          <option>Alle</option>
-          <option>Licht</option>
-          <option>Pose</option>
-          <option>Farbe</option>
-          <option>Komposition</option>
-        </select>
-      </div>
-
-      <ul className="reference-list">
-        {filteredReferences.length === 0 && (
-          <p>Keine passenden Referenzen gefunden.</p>
-        )}
-        {filteredReferences.map((ref) => (
-          <li key={ref.id} className="reference-item">
-            <span className={`category-badge ${ref.category}`}>
-              {ref.category}
-            </span>
-            <br />
-            <a href={ref.link} target="_blank" rel="noreferrer">
-              {ref.link}
-            </a>
-            <br />
-            <em className="note-text">{ref.note}</em>
-            <br />
-            <button
-              onClick={() => {
-                setEditingRef(ref);
-                setLink(ref.link);
-                setCategory(ref.category);
-                setNote(ref.note);
-              }}
-            >
-              Bearbeiten
-            </button>
-            <button
-              onClick={() => deleteReference(ref.id)}
-              className="delete-button"
-            >
-              Löschen
-            </button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
