@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function ReferenceForm({
   values,
@@ -12,6 +12,8 @@ function ReferenceForm({
   onCancel,
 }) {
   const linkInputRef = useRef(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     if (editingRef && linkInputRef.current) {
@@ -40,6 +42,24 @@ function ReferenceForm({
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onSubmit]);
+
+  useEffect(() => {
+    if (justSaved) {
+      // Show + reset exit
+      setShowFeedback(true);
+      setIsExiting(false);
+    } else if (showFeedback) {
+      // Trigger exit animation
+      setIsExiting(true);
+
+      const timeout = setTimeout(() => {
+        setShowFeedback(false);
+        setIsExiting(false);
+      }, 160); // match fadeDown duration
+
+      return () => clearTimeout(timeout);
+    }
+  }, [justSaved, showFeedback]);
 
   return (
     <form onSubmit={onSubmit} className="form">
@@ -86,7 +106,11 @@ function ReferenceForm({
         )}
       </div>
 
-      {justSaved && <span className="save-feedback">Gespeichert ✓</span>}
+      {showFeedback && (
+        <span className={`save-feedback ${isExiting ? "exit" : ""}`}>
+          Gespeichert ✓
+        </span>
+      )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
