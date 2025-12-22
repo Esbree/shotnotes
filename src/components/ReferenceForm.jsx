@@ -86,11 +86,7 @@ function ReferenceForm({
         )}
       </div>
 
-      {justSaved && (
-        <span style={{ color: "#2e7d32", fontSize: "0.9rem" }}>
-          Gespeichert ✓
-        </span>
-      )}
+      {justSaved && <span className="save-feedback">Gespeichert ✓</span>}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
