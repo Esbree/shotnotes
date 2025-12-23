@@ -15,11 +15,17 @@ function ReferenceItem({ refData, onEdit, onDelete, isEditing }) {
       <br />
 
       <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
-        <button onClick={() => onEdit(refData)} className="button-secondary">
+        <button
+          onClick={() => onEdit(refData)}
+          className="button button--secondary"
+        >
           Ändern
         </button>
 
-        <button onClick={() => onDelete(refData.id)} className="delete-button">
+        <button
+          onClick={() => onDelete(refData.id)}
+          className="button button--danger"
+        >
           Löschen
         </button>
       </div>

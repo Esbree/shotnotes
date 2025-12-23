@@ -93,7 +93,7 @@ function ReferenceForm({
       <div style={{ display: "flex", gap: "0.5rem" }}>
         <button
           type="submit"
-          className={`button-primary ${justSaved ? "is-success" : ""}`}
+          className={`button button--primary ${justSaved ? "is-success" : ""}`}
           disabled={isSaving || !values.link || !isDirty}
         >
           <span className="label">Speichern</span>

@@ -77,11 +77,15 @@ function App() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button onClick={signIn}>Login</button>
+          <button onClick={signIn} className="button">
+            Login
+          </button>
         </>
       ) : (
         <>
-          <button onClick={signOut}>Logout</button>
+          <button onClick={signOut} className="button">
+            Logout
+          </button>
 
           <ReferenceForm
             values={formValues}
