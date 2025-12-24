@@ -324,3 +324,61 @@ em {
 .save-feedback.exit {
   animation: fadeDown 160ms ease-in forwards;
 }
+
+/* =========================
+   Auth / Login Page
+========================= */
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 2.75rem 2.5rem 3rem;
+
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Title & Copy */
+
+.auth-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+  color: #475569;
+  line-height: 1.55;
+  margin-bottom: 2.25rem;
+}
+
+/* Inputs */
+
+.auth-card .input {
+  font-size: 1rem;
+  padding: 0.75rem 0.85rem;
+}
+
+/* Button spacing */
+
+.auth-actions {
+  margin-top: 1.5rem;
+}
+
+/* Status / Helper text */
+
+.auth-hint {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-align: center;
+}

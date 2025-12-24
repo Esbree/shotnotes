@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import { useReferences } from "./hooks/useReferences";
 import ReferenceForm from "./components/ReferenceForm";
@@ -68,24 +68,50 @@ function App() {
 
   return (
     <div className="container">
-      <h1>ShotNotes</h1>
-
       {!user ? (
-        <>
-          <input
-            placeholder="E-Mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button onClick={signIn} className="button">
-            Login
-          </button>
-        </>
+        <div className="auth-container">
+          <div className="auth-card">
+            <h1 className="auth-title">ShotNotes</h1>
+            <p className="auth-subtitle">
+              Organisiere visuelle Referenzen an einem Ort.
+            </p>
+
+            <input
+              className="input"
+              type="email"
+              placeholder="E-Mail-Adresse"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <div className="auth-actions">
+              <button
+                onClick={signIn}
+                className="button button--primary"
+                disabled={!email}
+              >
+                Login
+              </button>
+            </div>
+
+            <p className="auth-hint">
+              Du erhältst einen Login-Link per E-Mail.
+            </p>
+          </div>
+        </div>
       ) : (
         <>
-          <button onClick={signOut} className="button">
-            Logout
-          </button>
+          <div
+            style={{
+              marginBottom: "2.5rem",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <button onClick={signOut} className="button button--secondary">
+              Logout
+            </button>
+          </div>
 
           <ReferenceForm
             values={formValues}
@@ -118,12 +144,14 @@ function App() {
           <hr />
 
           <input
+            className="input search-input"
             placeholder="Suchen..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
 
           <select
+            className="select category-select"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
           >
