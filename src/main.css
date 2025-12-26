@@ -222,17 +222,27 @@ em {
 }
 
 /* =========================
-   Filters
+   Filter Toolbar
 ========================= */
 
-.search-input,
+.search-input {
+  flex: 1;
+  height: 42px;
+  font-size: 0.9rem;
+}
+
 .category-select {
-  padding: 0.55rem 0.75rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
+  height: 42px;
+  font-size: 0.85rem;
+  padding-right: 2rem;
+}
+
+.filter-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 2.75rem;
 }
 
 /* =========================

@@ -165,24 +165,26 @@ function App() {
 
           <hr />
 
-          <input
-            className="input search-input"
-            placeholder="Suchen..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="filter-toolbar">
+            <input
+              className="input search-input"
+              placeholder="Suchen…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
-          <select
-            className="select category-select"
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          >
-            <option>Alle</option>
-            <option>Licht</option>
-            <option>Pose</option>
-            <option>Farbe</option>
-            <option>Komposition</option>
-          </select>
+            <select
+              className="select category-select"
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option>Alle</option>
+              <option>Licht</option>
+              <option>Pose</option>
+              <option>Farbe</option>
+              <option>Komposition</option>
+            </select>
+          </div>
 
           <ReferenceList
             references={filteredReferences}
