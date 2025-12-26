@@ -31,6 +31,12 @@ function App() {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
+    if (editingRef) {
+      setShowForm(true);
+    }
+  }, [editingRef]);
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
