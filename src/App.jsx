@@ -101,17 +101,16 @@ function App() {
         </div>
       ) : (
         <>
-          <div
-            style={{
-              marginBottom: "2.5rem",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <button onClick={signOut} className="button button--secondary">
+          <header className="app-header">
+            <button
+              onClick={signOut}
+              className="button button--secondary app-logout"
+            >
               Logout
             </button>
-          </div>
+
+            <h1 className="app-title">ShotNotes</h1>
+          </header>
 
           <ReferenceForm
             values={formValues}
