@@ -102,14 +102,13 @@ function App() {
       ) : (
         <>
           <header className="app-header">
+            <h1 className="app-title">ShotNotes</h1>
             <button
               onClick={signOut}
               className="button button--secondary app-logout"
             >
               Logout
             </button>
-
-            <h1 className="app-title">ShotNotes</h1>
           </header>
 
           <ReferenceForm
