@@ -158,7 +158,9 @@ function App() {
                   note: "",
                 });
 
-                setShowForm(false);
+                setTimeout(() => {
+                  setShowForm(false);
+                }, 900);
               }}
             />
           </div>
