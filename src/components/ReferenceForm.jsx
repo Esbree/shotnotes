@@ -101,7 +101,11 @@ function ReferenceForm({
         </button>
 
         {editingRef && (
-          <button type="button" onClick={onCancel}>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="button button--secondary"
+          >
             Abbrechen
           </button>
         )}
