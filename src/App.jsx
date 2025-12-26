@@ -28,6 +28,8 @@ function App() {
     deleteReference,
   } = useReferences(user);
 
+  const [showForm, setShowForm] = useState(false);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -111,33 +113,55 @@ function App() {
             </button>
           </header>
 
-          <ReferenceForm
-            values={formValues}
-            isSaving={isSaving}
-            editingRef={editingRef}
-            error={error}
-            isDirty={isDirty}
-            justSaved={justSaved}
-            onChange={(changes) => setFormValues((v) => ({ ...v, ...changes }))}
-            onCancel={() => {
-              setEditingRef(null);
-              setFormValues({ link: "", category: "Licht", note: "" });
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "2rem",
             }}
-            onSubmit={async (e) => {
-              e.preventDefault();
+          >
+            <button
+              className="button button--primary"
+              onClick={() => setShowForm((v) => !v)}
+            >
+              {showForm ? "Schließen" : "+ Neue Referenz"}
+            </button>
+          </div>
 
-              await saveReference(formValues);
+          <div className={`collapsible ${showForm ? "open" : ""}`}>
+            <ReferenceForm
+              values={formValues}
+              isSaving={isSaving}
+              editingRef={editingRef}
+              error={error}
+              isDirty={isDirty}
+              justSaved={justSaved}
+              onChange={(changes) =>
+                setFormValues((v) => ({ ...v, ...changes }))
+              }
+              onCancel={() => {
+                setEditingRef(null);
+                setFormValues({ link: "", category: "Licht", note: "" });
+                setShowForm(false);
+              }}
+              onSubmit={async (e) => {
+                e.preventDefault();
 
-              setJustSaved(true);
-              setTimeout(() => setJustSaved(false), 2000);
+                await saveReference(formValues);
 
-              setFormValues({
-                link: "",
-                category: "Licht",
-                note: "",
-              });
-            }}
-          />
+                setJustSaved(true);
+                setTimeout(() => setJustSaved(false), 2000);
+
+                setFormValues({
+                  link: "",
+                  category: "Licht",
+                  note: "",
+                });
+
+                setShowForm(false);
+              }}
+            />
+          </div>
 
           <hr />
 

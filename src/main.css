@@ -382,3 +382,20 @@ em {
   color: #64748b;
   text-align: center;
 }
+
+/* =========================
+   Collapsible Form
+========================= */
+
+.collapsible {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 200ms ease;
+}
+
+.collapsible.open {
+  max-height: 1000px;
+  opacity: 1;
+}
